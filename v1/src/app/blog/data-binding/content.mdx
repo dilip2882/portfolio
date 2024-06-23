@@ -1,0 +1,217 @@
+import { BlogLayout } from "@/components/BlogLayout";
+
+import { CodeWindow } from "@/components/CodeWindow";
+
+export const meta = {
+  date: "2024-06-21",
+  title: "Types of Data Binding? Difference between One way and Two way Data Binding",
+  description:
+    "Data Binding in Android is a technique that simplifies the process of connecting your UI elements (views) to your data sources (models). It eliminates the need for repetitive findViewById calls and promotes a cleaner separation of concerns between your layout and logic. There are two main types of data binding.",
+  image:
+    "/images/blog/data-bind.png",
+  tags: ["java", "data bind"],
+};
+
+export default (props) => <BlogLayout meta={meta} {...props} />;
+
+## One-Way Data Binding
+In one-way data binding, data flows from the data source (model) to the UI (views) in a unidirectional manner. Changes in the model are reflected in the UI, but user interactions with the UI do not modify the data source directly.
+This approach is ideal for scenarios where the UI primarily displays information that may originate from a database, network request, or other external source.
+
+### Model:
+
+data class User(val name: String, val email: String)
+
+### Layout (activity_main.xml):
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto">
+
+      <data>
+          <variable
+              name="user"
+              type="com.example.app.User" />
+      </data>
+
+      <TextView
+          android:id="@+id/text_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{user.name}" />
+
+      <TextView
+          android:id="@+id/text_email"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@{user.email}" />
+
+</layout>
+```
+
+### Activity (MainActivity.kt):
+
+```
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var user: User
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        user = User("Dilip Patel", "dilip@example.com")
+
+        // Bind data to layout using DataBindingUtil
+        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.user = user
+    }
+}
+```
+
+In this example, the user data object is bound to the TextViews in the layout. Changes made to the user object (e.g., user.name = "Dilip Patel") will automatically reflect in the UI. However, typing something in the TextViews won't update the user object.
+
+## Two-Way Data Binding
+
+Two-way data binding in Android Data Binding allows for a bidirectional flow of information between your UI elements (Views) and your data source (Models). This means that changes made in the UI are automatically reflected in the data object, and vice versa. This pattern is particularly useful for interactive elements like edit texts, checkboxes, and other user input fields. Here’s a deeper dive into two-way data binding:
+
+### Requirements:
+
+  Data Model: Your data model class needs to inherit from BaseObservable (or a similar class) provided by the Data Binding library. This class offers methods like set and notifyPropertyChanged to manage data updates and notify the binding system about changes.
+
+  Layout: The layout file utilizes the @{} syntax to bind UI elements to properties in the data object. However, for two-way binding, you'll also need to leverage the @InverseBindingAdapter and @InverseBindingMethod annotations (explained later).
+
+### Mechanism:
+
+  Initial Binding: During layout inflation, the Data Binding library establishes a connection between the UI elements and the data object properties.
+  
+  Data to UI Updates: When the data object’s properties are modified, the library automatically updates the corresponding UI elements.
+
+  UI to Data Updates: When the user interacts with UI elements bound for two-way data binding, the library needs to capture these changes and update the data object accordingly. Here’s where @InverseBindingAdapter and @InverseBindingMethod come into play.
+
+### Understanding @InverseBindingAdapter and @InverseBindingMethod:
+
+  @InverseBindingAdapter Annotation: This annotation is placed on a static method in your data binding adapter class. It defines how the Data Binding library should interpret changes made in the UI element back to the data object's property. It typically takes two arguments: the bound view and the new value from the UI element.
+
+  @InverseBindingMethod Annotation: This annotation is placed on a getter method within your data object class. It specifies how the library should set the property value in the data object based on the UI element's change. It typically doesn't take any arguments but returns the new property value for the data object.
+
+## Example:
+
+To enable two-way data binding in your layout, use the @{} syntax with curly braces around the property:
+
+### Model (implements BaseObservable):
+
+```
+class User(var name: String, var age: Int) : BaseObservable() {
+    fun setName(newName: String) {
+        name = newName
+        notifyPropertyChanged(BR.name) // Notify about name property change
+    }
+}
+```
+
+### Layout (activity_main.xml):
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="user"
+            type="com.example.app.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{user.name}"
+            android:hint="Enter Name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+```
+
+### Activity (MainActivity.kt):
+
+```
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var user: User
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        user = User("Dilip Patel", 30)
+        val binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.user = user
+    }
+}
+```
+
+## Explanation:
+
+### Model:
+
+  The User class inherits from BaseObservable and has properties name and age.
+
+  The setName method updates the name property and calls notifyPropertyChanged(BR.name) to inform the data binding system that the name property has changed.
+
+  BR.name is an auto-generated constant that represents the name property for easier reference.
+
+### Layout:
+
+  The EditText element is bound to the user.name property using the @{} syntax.
+
+  When the user edits the text in the EditText, the change is reflected in the user.name property automatically.
+
+### Activity:
+
+  An instance of User is created and assigned to the user variable.
+
+  Data binding is set up using DataBindingUtil.setContentView.
+
+  The user variable is assigned to the binding.user property, establishing the connection between the data object and the layout.
+
+## Key Points:
+
+  Two-way data binding simplifies code by eliminating the need for manual event listeners or code to update both UI and data source.
+
+  Remember to update the data source using methods like set and notify changes using notifyPropertyChanged for proper data flow.
+
+  Data binding can be used with various UI elements like EditText, CheckBox, Spinner, etc.
+
+## Additional Considerations:
+
+  Two-way data binding can introduce performance overhead for complex scenarios. 
+
+  Consider one-way data binding if performance is critical.
+
+  For custom attributes that require two-way binding behavior, you can use the @InverseBindingAdapter and @InverseBindingMethod annotations.
+
+## Key Differences between One-way and Two-way Data Binding
+
+```
+Feature      |    One-way Data Binding           |    Two-way Data Binding
+
+Data         |     Flow Data -> UI               |     Data <-> UI
+UI Updates   |     Only from data source changes |     From both data source and UI changes
+Use Case     |     Non-interactive components    |     Interactive components (EditText, etc.)
+Data Model   |     Any class                     |     Class extending 
+```
+
+## Choosing the Right Binding Type
+
+  Use one-way data binding for simple UI elements that only need to display data and won’t be modified by the user.
+
+  Use two-way data binding for interactive UI components where user input needs to be reflected back to the data source.
