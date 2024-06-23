@@ -4,7 +4,7 @@ import { Highlight } from "@/components/Highlight";
 import { Paragraph } from "@/components/Paragraph";
 import { Products } from "@/components/Products";
 import { TechStack } from "@/components/TechStack";
-import Blog from "./blog/page";
+import { WorkHistory } from "@/components/WorkHistory";
 
 export default function Home() {
   return (
@@ -17,6 +17,7 @@ export default function Home() {
         millions of lives I am keen to learn new tech and build as many projects as possible.
       </Paragraph>
       <TechStack />
+      <WorkHistory />
       <Products />
     </Container>
   );

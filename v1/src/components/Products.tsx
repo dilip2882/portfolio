@@ -10,7 +10,13 @@ import { motion } from "framer-motion";
 
 export const Products = () => {
   return (
-    <div>
+    <div  className="mb-12">
+        <Heading
+          as="h3"
+          className="font-black text-2xl md:text-2xl lg:text-2xl mb-4"
+        >
+          Projects
+        </Heading>
       <div className="grid grid-cols-1  gap-10">
         {products.map((product: Product, idx: number) => (
           <motion.div

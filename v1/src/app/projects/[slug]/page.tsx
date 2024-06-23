@@ -27,9 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   } else {
     return {
-      title: "Projects | John Doe",
+      title: "Projects | Dilip Patel",
       description:
-        "John Doe is a developer, writer and speaker. He is a digital nomad and travels around the world while working remotely.",
+        "I'm a Software Engineer that loves building solutions that can impact millions of lives I am keen to learn new tech and build as many projects as possible.",
     };
   }
 }
