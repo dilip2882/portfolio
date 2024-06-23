@@ -1,16 +1,23 @@
 export const products = [
   {
     href: "https://github.com/dilip2882/Chat-App",
-    title: "Chat App",
+    title: "Marketplace",
     description:
-      "A design and development studio that focuses on building quality apps.",
-    thumbnail: "/images/blog/data-bind.png",
+      "Android UI app for a marketplace using Java and Firebase.",
+    thumbnail: "/images/project/Marketplace/home screen.png",
     images: [
-      "/images/blog/data-bind.png",
-      "/images/blog/data-bind.png"
+      "/images/project/Marketplace/sign_up.png",
+      "/images/project/Marketplace/sign_in.png",
+      "/images/project/Marketplace/home2.png",
+      "/images/project/Marketplace/hproduct.png",
+      "/images/project/Marketplace/gproduct.png",
+      "/images/project/Marketplace/product.png",
+      "/images/project/Marketplace/product2.png",
+      "/images/project/Marketplace/product3.png",
+      "/images/project/Marketplace/cart.png",
     ],
-    stack: ["Nextjs", "Tailwindcss"],
-    slug: "aceternity",
+    stack: ["Java", "Firease"],
+    slug: "marketplace",
     live: false,
     content: (
       <div>
@@ -25,7 +32,7 @@ export const products = [
     ),
   },
   {
-    href: "https://github.com/dilip2882/Chat-App",
+    href: "https://github.com/dilip2882/MarketPlace",
     title: "Chat App",
     description:
       "A design and development studio that focuses on building quality apps.",
@@ -35,7 +42,7 @@ export const products = [
       "/images/blog/data-bind.png"
     ],
     stack: ["Nextjs", "Tailwindcss"],
-    slug: "aceternity",
+    slug: "chatapp",
     live: false,
     content: (
       <div>
